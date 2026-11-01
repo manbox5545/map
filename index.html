@@ -1,1008 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Offline Navigator</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #111;
-        }
-
-        /* MAP */
-
-        #map {
-            width: 100%;
-            height: 100%;
-            background:
-                linear-gradient(
-                    135deg,
-                    #dfe8d7,
-                    #b8d0b0
-                );
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* FAKE ROAD NETWORK FOR TESTING */
-
-        .road {
-            position: absolute;
-
-            background: #555;
-
-            border: 3px solid #777;
-
-            box-shadow:
-                0 0 0 2px rgba(255,255,255,.25);
-
-            transform-origin: center;
-        }
-
-        .road.horizontal {
-            width: 100%;
-            height: 55px;
-
-            top: 50%;
-            left: 0;
-
-            transform:
-                translateY(-50%);
-        }
-
-        .road.vertical {
-            width: 55px;
-            height: 100%;
-
-            left: 50%;
-            top: 0;
-
-            transform:
-                translateX(-50%);
-        }
-
-        .road.diagonal {
-            width: 100%;
-            height: 45px;
-
-            left: 0;
-            top: 50%;
-
-            transform:
-                translateY(-50%)
-                rotate(25deg);
-        }
-
-        /* HEADER */
-
-        #header {
-
-            position: absolute;
-
-            top: 15px;
-            left: 15px;
-            right: 15px;
-
-            z-index: 10;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            padding: 14px 18px;
-
-            border-radius: 16px;
-
-            background:
-                rgba(20,20,20,.9);
-
-            color: white;
-
-            box-shadow:
-                0 8px 30px
-                rgba(0,0,0,.3);
-        }
-
-        #title {
-            font-size: 19px;
-            font-weight: bold;
-        }
-
-        #status {
-            font-size: 13px;
-            color: #aaa;
-        }
-
-        #dot {
-
-            display: inline-block;
-
-            width: 9px;
-            height: 9px;
-
-            border-radius: 50%;
-
-            background: #777;
-
-            margin-right: 5px;
-        }
-
-        #dot.active {
-            background: #00e676;
-
-            box-shadow:
-                0 0 10px #00e676;
-        }
-
-        /* INFO */
-
-        #info {
-
-            position: absolute;
-
-            top: 85px;
-            left: 15px;
-
-            z-index: 10;
-
-            width: 230px;
-
-            padding: 15px;
-
-            border-radius: 16px;
-
-            background:
-                rgba(20,20,20,.9);
-
-            color: white;
-        }
-
-        .infoRow {
-
-            display: flex;
-
-            justify-content:
-                space-between;
-
-            margin-bottom: 10px;
-
-            font-size: 13px;
-        }
-
-        .infoRow:last-child {
-            margin-bottom: 0;
-        }
-
-        .label {
-            color: #aaa;
-        }
-
-        /* PLAYER */
-
-        #player {
-
-            position: absolute;
-
-            left: 50%;
-            top: 50%;
-
-            width: 28px;
-            height: 28px;
-
-            transform:
-                translate(-50%,-50%);
-
-            z-index: 8;
-
-            border-radius: 50%;
-
-            background: #1976d2;
-
-            border: 4px solid white;
-
-            box-shadow:
-                0 0 0 9px
-                rgba(25,118,210,.2),
-                0 4px 12px
-                rgba(0,0,0,.4);
-        }
-
-        #arrow {
-
-            position: absolute;
-
-            left: 50%;
-            top: -22px;
-
-            transform:
-                translateX(-50%);
-
-            width: 0;
-            height: 0;
-
-            border-left:
-                8px solid transparent;
-
-            border-right:
-                8px solid transparent;
-
-            border-bottom:
-                20px solid #1976d2;
-        }
-
-        /* CONTROLS */
-
-        #controls {
-
-            position: absolute;
-
-            right: 15px;
-            bottom: 20px;
-
-            z-index: 10;
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 10px;
-        }
-
-        button {
-
-            min-width: 55px;
-            min-height: 52px;
-
-            border: none;
-
-            border-radius: 15px;
-
-            background:
-                rgba(20,20,20,.92);
-
-            color: white;
-
-            font-size: 14px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 5px 20px
-                rgba(0,0,0,.3);
-        }
-
-        button:active {
-            transform: scale(.95);
-        }
-
-        #start {
-            background: #008f5a;
-        }
-
-        #stop {
-            display: none;
-            background: #c62828;
-        }
-
-        /* MESSAGE */
-
-        #message {
-
-            position: absolute;
-
-            left: 50%;
-            bottom: 20px;
-
-            transform:
-                translateX(-50%);
-
-            z-index: 20;
-
-            padding: 12px 18px;
-
-            background:
-                rgba(20,20,20,.9);
-
-            color: white;
-
-            border-radius: 14px;
-
-            font-size: 13px;
-
-            text-align: center;
-        }
-
-    </style>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080b16">
+<title>Pyro Motion — Hand Fire FX</title>
+<style>
+:root{--bg:#080b16;--panel:#111a2c;--line:#293853;--text:#f5f7ff;--muted:#a8b5cc;--hot:#ff9b42}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{overflow:hidden}.app{height:100dvh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px;background:#0c1221;border-bottom:1px solid var(--line);z-index:2}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#ffdc78,#ff572e 60%,#9e2dff);display:grid;place-items:center;font-size:21px;box-shadow:0 0 25px #ff713a55}
+h1{font-size:16px;margin:0}.tag{font-size:11px;color:var(--muted)}
+.status{font-size:12px;color:#a9f2c8;white-space:nowrap}.stage{position:relative;flex:1;min-height:0;background:radial-gradient(ellipse at 50% 65%,#18243c,#080b16 70%);overflow:hidden}
+#fx{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+#video{position:absolute;width:1px;height:1px;opacity:.001;left:-10px;top:-10px}
+.hint{position:absolute;z-index:2;left:50%;top:18px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 28px);text-align:center;color:#d7deec;background:#111a2cbb;border:1px solid #ffffff1c;border-radius:999px;padding:9px 14px;font-size:12px;backdrop-filter:blur(8px)}
+.center{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;pointer-events:none;z-index:0}
+.center strong{font-size:clamp(23px,5vw,38px);display:block}.center span{color:var(--muted);font-size:13px}
+.controls{z-index:3;background:#0c1221;border-top:1px solid var(--line);padding:12px max(14px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+.actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:1px solid #394967;background:#18243a;color:#f5f7ff;border-radius:13px;padding:12px 15px;font-weight:750;min-height:46px}.btn.primary{background:linear-gradient(100deg,#ffb44d,#ff633e);border:0;color:#21101a;flex:1}.btn:disabled{opacity:.5}
+.settings{display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap;color:var(--muted);font-size:12px}.settings label{display:flex;align-items:center;gap:7px}.settings input{accent-color:#ff8c43}.note{font-size:11px;color:#8795ad;margin-top:8px;line-height:1.4}
+@media(min-width:760px){.top{padding:14px 22px}.controls{padding:14px 22px}.actions,.settings,.note{max-width:900px;margin-left:auto;margin-right:auto}.hint{top:22px}}
+</style>
 </head>
-
-
 <body>
-
-
-<!-- MAP -->
-
-<div id="map">
-
-    <!-- TEST ROADS -->
-
-    <div class="road horizontal"></div>
-
-    <div class="road vertical"></div>
-
-    <div class="road diagonal"></div>
-
-
-    <!-- PLAYER -->
-
-    <div id="player">
-
-        <div id="arrow"></div>
-
-    </div>
-
+<div class="app">
+<header class="top">
+ <div class="brand"><div class="logo">🔥</div><div><h1>PYRO MOTION</h1><div class="tag">Hand-tracked visual effects</div></div></div>
+ <div class="status" id="status">Camera off</div>
+</header>
+<main class="stage" id="stage">
+ <video id="video" playsinline muted></video>
+ <canvas id="fx"></canvas>
+ <div class="hint" id="hint">Allow camera access, then move your hand</div>
+ <div class="center" id="welcome"><div><strong>Move your hand.</strong><span>A glowing fireball will follow your index finger.</span></div></div>
+</main>
+<section class="controls">
+ <div class="actions">
+  <button class="btn primary" id="start">Enable camera</button>
+  <button class="btn" id="stop" disabled>Stop</button>
+  <button class="btn" id="clear">Clear effects</button>
+ </div>
+ <div class="settings">
+  <label>Fire intensity <input id="intensity" type="range" min="1" max="3" value="2"></label>
+  <label><input id="mirror" type="checkbox" checked> Mirror movement</label>
+  <label><input id="trail" type="checkbox" checked> Spark trail</label>
+ </div>
+ <div class="note">Visual-only effect. Camera frames are processed in this browser and are not recorded or uploaded by this app. Hand tracking requires an internet connection to load its vision library.</div>
+</section>
 </div>
-
-
-<!-- HEADER -->
-
-<div id="header">
-
-    <div id="title">
-        🗺️ Offline Navigator
-    </div>
-
-    <div id="status">
-
-        <span id="dot"></span>
-
-        <span id="statusText">
-            GPS OFF
-        </span>
-
-    </div>
-
-</div>
-
-
-<!-- INFORMATION -->
-
-<div id="info">
-
-    <div class="infoRow">
-
-        <span class="label">
-            Speed
-        </span>
-
-        <span id="speed">
-            0 km/h
-        </span>
-
-    </div>
-
-
-    <div class="infoRow">
-
-        <span class="label">
-            Accuracy
-        </span>
-
-        <span id="accuracy">
-            --
-        </span>
-
-    </div>
-
-
-    <div class="infoRow">
-
-        <span class="label">
-            Distance
-        </span>
-
-        <span id="distance">
-            0 m
-        </span>
-
-    </div>
-
-
-    <div class="infoRow">
-
-        <span class="label">
-            Heading
-        </span>
-
-        <span id="heading">
-            0°
-        </span>
-
-    </div>
-
-</div>
-
-
-<!-- CONTROLS -->
-
-<div id="controls">
-
-    <button id="locate">
-        📍
-    </button>
-
-    <button id="start">
-        ▶ Track
-    </button>
-
-    <button id="stop">
-        ■ Stop
-    </button>
-
-</div>
-
-
-<!-- MESSAGE -->
-
-<div id="message">
-
-    Click "Track" to start GPS.
-
-</div>
-
-
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script>
-
-
-/* =========================================================
-   VARIABLES
-========================================================= */
-
-let gpsWatch = null;
-
-let tracking = false;
-
-let lastPosition = null;
-
-let totalDistance = 0;
-
-let currentHeading = 0;
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const player =
-    document.getElementById(
-        "player"
-    );
-
-const arrow =
-    document.getElementById(
-        "arrow"
-    );
-
-const startButton =
-    document.getElementById(
-        "start"
-    );
-
-const stopButton =
-    document.getElementById(
-        "stop"
-    );
-
-const statusText =
-    document.getElementById(
-        "statusText"
-    );
-
-const gpsDot =
-    document.getElementById(
-        "dot"
-    );
-
-
-/* =========================================================
-   START GPS
-========================================================= */
-
-function startGPS() {
-
-    if (
-        !navigator.geolocation
-    ) {
-
-        alert(
-            "Your browser does not support GPS."
-        );
-
-        return;
-
-    }
-
-
-    tracking = true;
-
-
-    startButton.style.display =
-        "none";
-
-
-    stopButton.style.display =
-        "block";
-
-
-    gpsDot.classList.add(
-        "active"
-    );
-
-
-    statusText.textContent =
-        "GPS ACTIVE";
-
-
-    document.getElementById(
-        "message"
-    ).textContent =
-        "GPS tracking started.";
-
-
-    gpsWatch =
-        navigator.geolocation.watchPosition(
-
-            updatePosition,
-
-            gpsError,
-
-            {
-
-                enableHighAccuracy:
-                    true,
-
-                maximumAge:
-                    1000,
-
-                timeout:
-                    15000
-
-            }
-
-        );
-
-}
-
-
-/* =========================================================
-   STOP GPS
-========================================================= */
-
-function stopGPS() {
-
-    tracking = false;
-
-
-    if (
-        gpsWatch !== null
-    ) {
-
-        navigator.geolocation.clearWatch(
-            gpsWatch
-        );
-
-        gpsWatch = null;
-
-    }
-
-
-    startButton.style.display =
-        "block";
-
-
-    stopButton.style.display =
-        "none";
-
-
-    gpsDot.classList.remove(
-        "active"
-    );
-
-
-    statusText.textContent =
-        "GPS OFF";
-
-
-    document.getElementById(
-        "message"
-    ).textContent =
-        "GPS tracking stopped.";
-
-}
-
-
-/* =========================================================
-   GPS UPDATE
-========================================================= */
-
-function updatePosition(
-    position
-) {
-
-    const latitude =
-        position.coords.latitude;
-
-    const longitude =
-        position.coords.longitude;
-
-    const accuracy =
-        position.coords.accuracy;
-
-    const speed =
-        position.coords.speed || 0;
-
-
-    /* DISTANCE */
-
-    if (
-        lastPosition
-    ) {
-
-        const distance =
-            calculateDistance(
-
-                lastPosition.latitude,
-
-                lastPosition.longitude,
-
-                latitude,
-
-                longitude
-
-            );
-
-
-        if (
-            distance > 1 &&
-            distance < 100
-        ) {
-
-            totalDistance +=
-                distance;
-
-        }
-
-    }
-
-
-    /* HEADING */
-
-    if (
-        position.coords.heading !== null &&
-        !isNaN(
-            position.coords.heading
-        )
-    ) {
-
-        currentHeading =
-            position.coords.heading;
-
-    }
-
-
-    lastPosition = {
-
-        latitude,
-        longitude
-
-    };
-
-
-    /* UI */
-
-    document.getElementById(
-        "speed"
-    ).textContent =
-
-        (
-            speed * 3.6
-        ).toFixed(1)
-        + " km/h";
-
-
-    document.getElementById(
-        "accuracy"
-    ).textContent =
-
-        Math.round(
-            accuracy
-        )
-        + " m";
-
-
-    document.getElementById(
-        "distance"
-    ).textContent =
-
-        formatDistance(
-            totalDistance
-        );
-
-
-    document.getElementById(
-        "heading"
-    ).textContent =
-
-        Math.round(
-            currentHeading
-        )
-        + "°";
-
-
-    /* ROTATE ARROW */
-
-    arrow.style.transform =
-
-        `translateX(-50%)
-         rotate(${currentHeading}deg)`;
-
-
-    console.log(
-        "GPS:",
-        latitude,
-        longitude
-    );
-
-}
-
-
-/* =========================================================
-   GPS ERROR
-========================================================= */
-
-function gpsError(
-    error
-) {
-
-    console.error(
-        error
-    );
-
-
-    statusText.textContent =
-        "GPS ERROR";
-
-
-    document.getElementById(
-        "message"
-    ).textContent =
-
-        "GPS error: " +
-        error.message;
-
-}
-
-
-/* =========================================================
-   LOCATION BUTTON
-========================================================= */
-
-document.getElementById(
-    "locate"
-).onclick =
-
-function() {
-
-    if (
-        !navigator.geolocation
-    ) {
-
-        alert(
-            "GPS is not supported."
-        );
-
-        return;
-
-    }
-
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position) {
-
-            console.log(
-                position.coords
-            );
-
-
-            document.getElementById(
-                "message"
-            ).textContent =
-
-                "Location found!";
-
-        },
-
-        gpsError,
-
-        {
-
-            enableHighAccuracy:
-                true
-
-        }
-
-    );
-
-};
-
-
-/* =========================================================
-   BUTTON EVENTS
-========================================================= */
-
-startButton.onclick =
-    startGPS;
-
-
-stopButton.onclick =
-    stopGPS;
-
-
-/* =========================================================
-   DISTANCE CALCULATION
-========================================================= */
-
-function calculateDistance(
-
-    lat1,
-    lon1,
-    lat2,
-    lon2
-
-) {
-
-    const earthRadius =
-        6371000;
-
-
-    const dLat =
-        toRadians(
-            lat2 - lat1
-        );
-
-
-    const dLon =
-        toRadians(
-            lon2 - lon1
-        );
-
-
-    const a =
-
-        Math.sin(
-            dLat / 2
-        ) ** 2
-
-        +
-
-        Math.cos(
-            toRadians(lat1)
-        )
-
-        *
-
-        Math.cos(
-            toRadians(lat2)
-        )
-
-        *
-
-        Math.sin(
-            dLon / 2
-        ) ** 2;
-
-
-    const c =
-
-        2 *
-
-        Math.atan2(
-
-            Math.sqrt(a),
-
-            Math.sqrt(
-                1 - a
-            )
-
-        );
-
-
-    return (
-        earthRadius * c
-    );
-
-}
-
-
-/* =========================================================
-   DISTANCE FORMAT
-========================================================= */
-
-function formatDistance(
-    meters
-) {
-
-    if (
-        meters < 1000
-    ) {
-
-        return (
-            Math.round(meters)
-            + " m"
-        );
-
-    }
-
-
-    return (
-
-        (
-            meters / 1000
-        ).toFixed(2)
-
-        + " km"
-
-    );
-
-}
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function toRadians(
-    degrees
-) {
-
-    return (
-
-        degrees *
-        Math.PI /
-        180
-
-    );
-
-}
-
-
+(()=>{
+ const video=document.getElementById('video'),canvas=document.getElementById('fx'),ctx=canvas.getContext('2d');
+ const startBtn=document.getElementById('start'),stopBtn=document.getElementById('stop'),status=document.getElementById('status'),hint=document.getElementById('hint'),welcome=document.getElementById('welcome'),stage=document.getElementById('stage');
+ const intensity=document.getElementById('intensity'),mirror=document.getElementById('mirror'),trail=document.getElementById('trail');
+ let stream=null,hands=null,running=false,raf=0,lastProcess=0,particles=[],target=null,fireTime=0;
+ const rand=(a,b)=>a+Math.random()*(b-a);
+ function resize(){const r=stage.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
+ addEventListener('resize',resize);resize();
+ function setStatus(s){status.textContent=s}
+ function addParticles(x,y,n){for(let i=0;i<n;i++){const a=rand(0,Math.PI*2),v=rand(.7,4.5);particles.push({x:x+rand(-8,8),y:y+rand(-8,8),vx:Math.cos(a)*v,vy:Math.sin(a)*v-rand(1,3),life:rand(18,38),max:38,size:rand(2,6),h:rand(12,48)})}}
+ function draw(){
+  const w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);
+  if(target){
+   const power=Number(intensity.value),x=target.x,y=target.y,r=18+power*8+Math.sin(Date.now()/65)*3;
+   const glow=ctx.createRadialGradient(x,y,2,x,y,r*3.2);glow.addColorStop(0,'#fff9cf');glow.addColorStop(.16,'#ffe18a');glow.addColorStop(.4,'#ff8a32aa');glow.addColorStop(1,'#ff421000');
+   ctx.globalCompositeOperation='lighter';ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,y,r*3.2,0,Math.PI*2);ctx.fill();
+   const core=ctx.createRadialGradient(x-r*.25,y-r*.3,1,x,y,r);core.addColorStop(0,'#fffde1');core.addColorStop(.35,'#ffc34e');core.addColorStop(.72,'#ff642d');core.addColorStop(1,'#c51d18');ctx.fillStyle=core;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+   for(let i=0;i<power*3;i++){const a=rand(0,Math.PI*2),rr=rand(r*.6,r*1.6);ctx.fillStyle=`rgba(255,${Math.floor(rand(90,210))},45,${rand(.3,.8)})`;ctx.beginPath();ctx.arc(x+Math.cos(a)*rr,y+Math.sin(a)*rr,rand(1,3),0,Math.PI*2);ctx.fill()}
+   if(trail.checked)addParticles(x,y,power*3);
+  }
+  ctx.globalCompositeOperation='lighter';
+  for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy-=.025;p.vx*=.985;p.life--;const alpha=Math.max(0,p.life/p.max);ctx.fillStyle=`hsla(${p.h},100%,${55+alpha*20}%,${alpha})`;ctx.beginPath();ctx.arc(p.x,p.y,p.size*alpha,0,Math.PI*2);ctx.fill();if(p.life<=0)particles.splice(i,1)}
+  ctx.globalCompositeOperation='source-over';
+  raf=requestAnimationFrame(draw);
+ }
+ function onResults(results){
+  if(!running)return;
+  const lm=results.multiHandLandmarks&&results.multiHandLandmarks[0];
+  if(lm){const p=lm[8],r=stage.getBoundingClientRect();let nx=p.x;if(mirror.checked)nx=1-nx;target={x:nx*r.width,y:p.y*r.height};hint.textContent='Hand detected · move your index finger';welcome.style.display='none';setStatus('Hand detected');}
+  else{target=null;hint.textContent='Show one hand to the camera';setStatus('Looking for hand');}
+ }
+ async function loop(now){
+  if(!running)return;
+  if(video.readyState>=2&&now-lastProcess>33){lastProcess=now;try{await hands.send({image:video})}catch(e){console.error(e)}}
+  if(running)requestAnimationFrame(loop);
+ }
+ async function stop(){
+  running=false;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;target=null;particles=[];
+  if(hands){try{hands.close()}catch(e){}hands=null}
+  startBtn.disabled=false;stopBtn.disabled=true;setStatus('Camera off');hint.textContent='Camera stopped';welcome.style.display='grid';
+ }
+ startBtn.addEventListener('click',async()=>{
+  if(!window.Hands){alert('Hand-tracking library did not load. Check your internet connection and reload this page.');return}
+  startBtn.disabled=true;setStatus('Starting camera…');hint.textContent='Requesting camera permission';
+  try{
+   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});
+   video.srcObject=stream;await video.play();
+   hands=new Hands({locateFile:file=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+   hands.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.5});
+   hands.onResults(onResults);running=true;stopBtn.disabled=false;hint.textContent='Show your hand to the camera';setStatus('Camera ready');welcome.style.display='none';requestAnimationFrame(loop);
+  }catch(e){console.error(e);setStatus('Camera unavailable');hint.textContent='Camera permission or device unavailable';startBtn.disabled=false;alert('Could not start the camera. Allow camera access and open this page over HTTPS or localhost.');}
+ });
+ stopBtn.addEventListener('click',stop);
+ document.getElementById('clear').addEventListener('click',()=>{particles=[];target=null;});
+ draw();
+})();
 </script>
-
 </body>
-
 </html>
